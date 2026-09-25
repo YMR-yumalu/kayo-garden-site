@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# AI・LLM向けの案内
+# 詳細は /llms.txt を参照してください
+
+Sitemap: SITE_URL/sitemap.xml

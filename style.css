@@ -1,0 +1,542 @@
+@charset "UTF-8";
+
+/* =========================================
+   Kayo Garden
+   ブランドカラー（スプシ colorcode より）
+========================================= */
+:root{
+  /* サービスカラー */
+  --henna:      #d56548;
+  --henna-dark: #b05032;
+  --henna-pale: #f5dfd5;
+
+  --yoga:       #7d8d6a;
+  --yoga-dark:  #5a6450;
+  --yoga-pale:  #e1e6d7;
+
+  --mimi:       #dbbb72;
+  --mimi-dark:  #986a48;
+  --mimi-pale:  #e5e0d5;
+
+  /* アンカー */
+  --navy:       #253d51;
+  --beige:      #e5e0d5;
+
+  /* 背景（2026：純白を避けオフホワイトへ） */
+  --bg:         #faf8f4;
+  --bg-tint:    #f3f0e9;
+
+  --line:       rgba(37,61,81,.14);
+  --text:       #253d51;
+  --text-thin:  #6b7b89;
+
+  --serif: "Noto Serif JP", serif;
+  --sans:  "Noto Sans JP", system-ui, sans-serif;
+
+  --maxw: 1080px;
+}
+
+*{ box-sizing:border-box; }
+
+html{ scroll-behavior:smooth; }
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:16px;              /* 2026：14px以下は古い */
+  font-weight:300;
+  line-height:2;
+  letter-spacing:.06em;
+  -webkit-font-smoothing:antialiased;
+}
+
+img{ max-width:100%; height:auto; display:block; }
+
+.inner{ width:min(92%, var(--maxw)); margin-inline:auto; }
+.narrow{ width:min(92%, 720px); }
+
+/* =========================================
+   ヒーロー
+========================================= */
+.hero{
+  position:relative;
+  min-height:min(88svh, 760px);
+  display:grid;
+  place-items:center;
+  text-align:center;
+  padding:clamp(80px, 12vh, 140px) 24px;
+  overflow:hidden;
+  /* 映像が読めない環境用のフォールバック */
+  background:
+    radial-gradient(120% 90% at 50% 0%, var(--yoga-pale) 0%, transparent 60%),
+    var(--bg);
+}
+
+/* 重なり順：映像(1) → 白ベール(2) → 文字(3)
+   ※z-indexにマイナスを使うと isolation/stacking context で
+     背景の後ろに隠れることがあるため、すべて正の値にする */
+
+/* 背景映像 */
+/* 映像の入れ物。ここで切り抜く */
+.hero-media{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  z-index:1;
+  background:var(--bg);
+  pointer-events:none;
+}
+.hero-video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  display:block;
+  /* 端に出る描画のにじみを消すため、ほんの少し拡大して切る */
+  transform:scale(1.04);
+}
+
+/* 映像の上に白を30%かぶせて文字を読みやすく */
+.hero-veil{
+  position:absolute; inset:0;
+  background:
+    linear-gradient(to bottom,
+      rgba(255,255,255,.34) 0%,
+      rgba(255,255,255,.26) 45%,
+      rgba(255,255,255,.44) 100%);
+  z-index:2;
+  pointer-events:none;
+}
+
+.hero-inner{ position:relative; z-index:3; }
+
+.hero-sub{
+  font-family:var(--serif);
+  font-size:.82rem;
+  letter-spacing:.34em;
+  color:var(--text);
+  margin:0 0 28px;
+  text-shadow:0 1px 12px rgba(255,255,255,.9);
+}
+
+/* 2026：特大見出しでタイポを主役に */
+.hero-title{
+  font-family:var(--serif);
+  text-shadow:0 2px 20px rgba(255,255,255,.75);
+  font-weight:300;
+  font-size:clamp(2.6rem, 9vw, 5.4rem);
+  letter-spacing:.14em;
+  line-height:1.25;
+  margin:0;
+  text-wrap:balance;
+}
+
+.hero-catch{
+  font-family:var(--serif);
+  font-size:clamp(.95rem, 2.6vw, 1.12rem);
+  letter-spacing:.2em;
+  line-height:2.4;
+  color:var(--text);                       /* 薄いグレー→ネイビーで読みやすく */
+  margin:34px 0 52px;
+  text-shadow:0 1px 14px rgba(255,255,255,.9);   /* 背景から浮かせる */
+}
+
+/* =========================================
+   共通セクション
+========================================= */
+.sec{ padding:clamp(72px, 12vw, 130px) 0; }
+
+.sec-title{
+  text-align:center;
+  margin:0 0 clamp(40px, 6vw, 68px);
+  font-weight:400;
+}
+/* --- 見出しの下に、なぞる線 ---------------------
+   .ja の下・中央から幅70%。
+   線の色はセクションの背景で自動的に切り替わる：
+     白系の背景（--bg）        → ベージュの線
+     ベージュ背景（--bg-tint） → 白の線                        */
+.sec-title .ja{
+  display:block;
+  position:relative;
+  font-family:var(--serif);
+  font-size:clamp(1.4rem, 4.4vw, 1.9rem);
+  letter-spacing:.24em;
+  padding-bottom:.55em;
+}
+.sec-title .ja::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:0;
+  width:30%;
+  height:1px;
+  transform:translateX(-50%) scaleX(0);
+  transform-origin:center;
+  background:var(--rule, var(--beige));
+}
+
+/* セクションごとに線の色を指定 */
+.services .sec-title .ja,
+.access   .sec-title .ja,
+.online   .sec-title .ja{ --rule: var(--beige); }   /* 背景が白系 → ベージュ */
+
+.price .sec-title .ja,
+.concept .sec-title .ja{ --rule: #ffffff; }          /* 背景がベージュ → 白 */
+
+/* スクロールで見出しが入ってきたら、中央から左右に伸びる */
+@media (prefers-reduced-motion:no-preference){
+  @supports (animation-timeline: view()){
+    .sec-title .ja::after{
+      animation:drawRule .9s ease-out both;
+      animation-timeline:view();
+      animation-range:entry 12% entry 55%;
+    }
+    @keyframes drawRule{
+      from{ transform:translateX(-50%) scaleX(0); }
+      to  { transform:translateX(-50%) scaleX(1); }
+    }
+  }
+  /* スクロール連動に未対応なら、読み込み後に一度だけ引く */
+  @supports not (animation-timeline: view()){
+    .sec-title .ja::after{ animation:drawRule .9s ease-out .3s both; }
+    @keyframes drawRule{
+      from{ transform:translateX(-50%) scaleX(0); }
+      to  { transform:translateX(-50%) scaleX(1); }
+    }
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .sec-title .ja::after{ transform:translateX(-50%) scaleX(1); }
+}
+.sec-title .en{
+  display:block;
+  margin-top:10px;
+  font-size:.7rem;
+  letter-spacing:.32em;
+  color:var(--text-thin);
+  text-transform:uppercase;
+}
+
+.lead{
+  font-family:var(--serif);
+  font-size:clamp(1.05rem, 3.2vw, 1.34rem);
+  line-height:2.5;
+  letter-spacing:.12em;
+  text-align:center;
+  margin:0 0 40px;
+  text-wrap:balance;
+}
+
+.text{
+  margin:0;
+  line-height:2.4;
+  color:var(--text-thin);
+  text-align:center;
+  text-wrap:pretty;
+  font-size:16.1px;     /* ふつうの本文より0.1pt太め */
+  font-weight:400;      /* body の 300 から一段上げる */
+}
+
+/* =========================================
+   コンセプト
+========================================= */
+.concept{ background:var(--bg-tint); }
+
+/* --- 文字の下を細い線がなぞる ---------------
+   表示0.8秒後にスタートし、2行あわせて2秒でなぞり終わる。
+   1行目 0.8s〜1.8s ／ 2行目 1.8s〜2.8s（計2秒） */
+.lead-underline{ --u-color: var(--yoga-dark); }
+
+.u-line{
+  position:relative;
+  display:inline;               /* 折り返せるように inline のまま */
+  padding-bottom:.22em;
+  background-image:linear-gradient(var(--u-color), var(--u-color));
+  background-repeat:no-repeat;
+  background-position:0 100%;
+  background-size:0% 1px;       /* 幅0から伸ばす＝なぞる表現 */
+}
+/* ::after は使わない（inlineだと折り返し時に崩れるため） */
+@media (prefers-reduced-motion:no-preference){
+  .lead-underline .u-line:nth-of-type(1){
+    animation:drawLine 1s linear .8s forwards;
+  }
+  .lead-underline .u-line:nth-of-type(2){
+    animation:drawLine 1s linear 1.8s forwards;
+  }
+  @keyframes drawLine{
+    from{ background-size:0% 1px; }
+    to  { background-size:100% 1px; }
+  }
+}
+/* アニメを好まない設定の人には最初から線を出す */
+@media (prefers-reduced-motion:reduce){
+  .u-line{ background-size:100% 1px; }
+}
+
+/* =========================================
+   サービス3枚
+========================================= */
+.cards{
+  display:grid;
+  gap:clamp(20px, 3vw, 32px);
+  grid-template-columns:1fr;
+}
+@media (min-width:768px){
+  .cards{ grid-template-columns:repeat(3,1fr); }
+}
+
+/* 2026：タクタイル・ブルータリズム＝1pxのヘアライン */
+.card{
+  border:1px solid var(--line);
+  padding:clamp(32px, 5vw, 48px) clamp(22px, 3vw, 30px);
+  background:var(--bg);
+  position:relative;
+  transition:transform .4s ease, box-shadow .4s ease;
+}
+.card::before{
+  content:"";
+  position:absolute; inset:0 0 auto 0;
+  height:3px;
+}
+.card-yoga::before { background:var(--yoga); }
+.card-mimi::before { background:var(--mimi); }
+.card-henna::before{ background:var(--henna); }
+
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 30px rgba(37,61,81,.07);
+}
+
+.card-title{
+  font-family:var(--serif);
+  font-weight:400;
+  font-size:1.35rem;
+  letter-spacing:.2em;
+  margin:0 0 14px;
+  text-align:center;
+}
+.card-lead{
+  text-align:center;
+  font-size:.82rem;
+  letter-spacing:.14em;
+  margin:0 0 26px;
+  padding-bottom:18px;
+  border-bottom:1px solid var(--line);
+}
+.card-yoga  .card-lead{ color:var(--yoga-dark); }
+.card-mimi  .card-lead{ color:var(--mimi-dark); }
+.card-henna .card-lead{ color:var(--henna-dark); }
+
+.card-text{
+  margin:0;
+  font-size:.92rem;
+  line-height:2.3;
+  color:var(--text-thin);
+  text-wrap:pretty;
+}
+
+/* =========================================
+   料金
+========================================= */
+.price{ background:var(--bg-tint); }
+
+.price-block{ margin-bottom:clamp(48px, 7vw, 72px); }
+.price-block:last-of-type{ margin-bottom:34px; }
+
+.price-head{
+  font-family:var(--serif);
+  font-weight:400;
+  font-size:1.15rem;
+  letter-spacing:.24em;
+  margin:0 0 22px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--line);
+}
+
+/* --- マーカー風のハイライト -------------------
+   各サービスカラーを opacity 40% で、右に向かって薄くする */
+.price-head span{
+  display:inline-block;
+  padding:2px 18px 2px 4px;
+  background-image:
+    linear-gradient(to right,
+      rgb(from var(--mk) r g b / .55) 0%,
+      rgb(from var(--mk) r g b / .26) 58%,
+      rgb(from var(--mk) r g b / 0)   100%);
+  background-repeat:no-repeat;
+  background-size:100% .62em;
+  background-position:0 72%;
+}
+.price-head-yoga  span{ --mk: var(--yoga); }
+.price-head-mimi  span{ --mk: var(--mimi); }
+.price-head-henna span{ --mk: var(--henna); }
+
+/* rgb(from ...) 未対応ブラウザ向けのフォールバック */
+@supports not (background-image: linear-gradient(to right, rgb(from red r g b / .4), transparent)){
+  .price-head-yoga  span{ background-image:linear-gradient(to right, rgba(125,141,106,.55) 0%, rgba(125,141,106,.26) 58%, rgba(125,141,106,0) 100%); }
+  .price-head-mimi  span{ background-image:linear-gradient(to right, rgba(219,187,114,.55) 0%, rgba(219,187,114,.26) 58%, rgba(219,187,114,0) 100%); }
+  .price-head-henna span{ background-image:linear-gradient(to right, rgba(213,101,72,.55) 0%, rgba(213,101,72,.26) 58%, rgba(213,101,72,0) 100%); }
+}
+
+.price-list{ margin:0; }
+.price-list > div{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:6px 20px;
+  padding:16px 2px;
+  border-bottom:1px dotted var(--line);
+}
+.price-list dt{
+  font-size:.94rem;
+  letter-spacing:.08em;
+}
+.price-list dd{
+  margin:0;
+  font-family:var(--serif);
+  font-size:.98rem;
+  letter-spacing:.06em;
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.note{
+  font-family:var(--sans);
+  font-size:.76rem;
+  color:var(--text-thin);
+  letter-spacing:.04em;
+}
+.price-note{
+  margin:14px 0 0;
+  font-size:.78rem;
+  color:var(--text-thin);
+  line-height:1.9;
+}
+.tax-note{
+  text-align:center;
+  font-size:.78rem;
+  color:var(--text-thin);
+  margin:0;
+}
+
+/* =========================================
+   アクセス
+========================================= */
+.info-list{ margin:0; border-top:1px solid var(--line); }
+.info-list > div{
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px 24px;
+  padding:18px 4px;
+  border-bottom:1px solid var(--line);
+}
+.info-list dt{
+  flex:0 0 7em;
+  font-size:.84rem;
+  letter-spacing:.16em;
+  color:var(--text-thin);
+}
+.info-list dd{
+  margin:0;
+  font-size:.94rem;
+  flex:1 1 14em;
+}
+.tbd{ color:var(--text-thin); }
+.tbd::after{
+  content:"COMING SOON";
+  display:inline-block;
+  margin-left:10px;
+  font-size:.62rem;
+  letter-spacing:.14em;
+  padding:2px 8px;
+  border:1px solid var(--line);
+  color:var(--text-thin);
+  vertical-align:2px;
+}
+
+/* =========================================
+   CTA
+========================================= */
+.cta{
+  text-align:center;
+  background:
+    radial-gradient(120% 100% at 50% 100%, var(--yoga-pale) 0%, transparent 62%),
+    var(--bg);
+}
+.cta-lead{
+  font-family:var(--serif);
+  font-size:clamp(1.15rem, 3.6vw, 1.5rem);
+  letter-spacing:.18em;
+  line-height:2.2;
+  margin:0 0 36px;
+}
+.cta-note{
+  margin:26px 0 0;
+  font-size:.8rem;
+  color:var(--text-thin);
+  line-height:2;
+}
+
+/* ボタン */
+.btn{
+  display:inline-block;
+  text-decoration:none;
+  font-size:.9rem;
+  letter-spacing:.16em;
+  padding:18px 46px;
+  border-radius:999px;
+  transition:opacity .3s ease, transform .3s ease;
+}
+.btn:hover{ opacity:.82; transform:translateY(-2px); }
+
+.btn-line{
+  background:var(--yoga);
+  color:#fff;
+}
+.btn-lg{ padding:22px 60px; font-size:.96rem; }
+
+/* =========================================
+   フッター
+========================================= */
+.footer{
+  padding:56px 24px 44px;
+  text-align:center;
+  border-top:1px solid var(--line);
+}
+.footer-logo{
+  font-family:var(--serif);
+  font-size:1.05rem;
+  letter-spacing:.3em;
+  margin:0 0 12px;
+}
+.footer-copy{
+  margin:0;
+  font-size:.7rem;
+  letter-spacing:.14em;
+  color:var(--text-thin);
+}
+
+/* =========================================
+   スクロール連動アニメーション
+   2026：CSSのみ（JS不要）。未対応環境では普通に表示される
+========================================= */
+@media (prefers-reduced-motion:no-preference){
+  @supports (animation-timeline: view()){
+    .sec-title, .lead, .text, .card, .price-block, .info-list, .cta-lead, .cta-note{
+      animation:fadeUp ease-out both;
+      animation-timeline:view();
+      animation-range:entry 5% entry 55%;
+    }
+    /* カードは少しずつ時間差で出す */
+    .cards .card:nth-child(2){ animation-range:entry 9% entry 58%; }
+    .cards .card:nth-child(3){ animation-range:entry 13% entry 62%; }
+
+    @keyframes fadeUp{
+      from{ opacity:0; transform:translateY(26px); }
+      to  { opacity:1; transform:translateY(0); }
+    }
+  }
+}
