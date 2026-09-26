@@ -103,9 +103,9 @@ img{ max-width:100%; height:auto; display:block; }
   position:absolute; inset:0;
   background:
     linear-gradient(to bottom,
-      rgba(255,255,255,.34) 0%,
-      rgba(255,255,255,.26) 45%,
-      rgba(255,255,255,.44) 100%);
+      rgba(255,255,255,.50) 0%,
+      rgba(255,255,255,.34) 50%,
+      rgba(255,255,255,.52) 100%);
   z-index:2;
   pointer-events:none;
 }
@@ -113,12 +113,19 @@ img{ max-width:100%; height:auto; display:block; }
 .hero-inner{ position:relative; z-index:3; }
 
 .hero-sub{
+  display:inline-block;
   font-family:var(--serif);
-  font-size:.82rem;
+  font-size:.8rem;
   letter-spacing:.34em;
-  color:var(--text);
-  margin:0 0 28px;
-  text-shadow:0 1px 12px rgba(255,255,255,.9);
+  color:var(--yoga-dark);
+  margin:0 0 30px;
+  font-weight:500;
+  /* 文字の後ろに薄い帯を敷いて、明るい背景でも確実に読めるようにする */
+  padding:7px 22px 7px 26px;
+  background:rgba(250,248,244,.82);
+  border:1px solid rgba(125,141,106,.28);
+  border-radius:999px;
+  backdrop-filter:blur(2px);
 }
 
 /* 2026：特大見出しでタイポを主役に */
@@ -140,7 +147,8 @@ img{ max-width:100%; height:auto; display:block; }
   line-height:2.4;
   color:var(--text);                       /* 薄いグレー→ネイビーで読みやすく */
   margin:34px 0 52px;
-  text-shadow:0 1px 14px rgba(255,255,255,.9);   /* 背景から浮かせる */
+  font-weight:500;
+  text-shadow:0 1px 12px rgba(255,255,255,1), 0 0 26px rgba(255,255,255,.95);
 }
 
 /* =========================================
