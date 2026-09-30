@@ -177,12 +177,13 @@ img{ max-width:100%; height:auto; display:block; }
 .sec-title .ja::after{
   content:"";
   position:absolute;
-  left:50%;
+  /* 中央揃えの見出しは中央から、左揃えの見出しは左端から引く */
+  left:var(--rule-left, 50%);
   bottom:0;
-  width:30%;
+  width:var(--rule-w, 30%);
   height:1px;
-  transform:translateX(-50%) scaleX(0);
-  transform-origin:center;
+  transform:translateX(var(--rule-shift, -50%)) scaleX(0);
+  transform-origin:var(--rule-origin, center);
   background:var(--rule, var(--beige));
 }
 
@@ -203,21 +204,21 @@ img{ max-width:100%; height:auto; display:block; }
       animation-range:entry 12% entry 55%;
     }
     @keyframes drawRule{
-      from{ transform:translateX(-50%) scaleX(0); }
-      to  { transform:translateX(-50%) scaleX(1); }
+      from{ transform:translateX(var(--rule-shift, -50%)) scaleX(0); }
+      to  { transform:translateX(var(--rule-shift, -50%)) scaleX(1); }
     }
   }
   /* スクロール連動に未対応なら、読み込み後に一度だけ引く */
   @supports not (animation-timeline: view()){
     .sec-title .ja::after{ animation:drawRule .9s ease-out .3s both; }
     @keyframes drawRule{
-      from{ transform:translateX(-50%) scaleX(0); }
-      to  { transform:translateX(-50%) scaleX(1); }
+      from{ transform:translateX(var(--rule-shift, -50%)) scaleX(0); }
+      to  { transform:translateX(var(--rule-shift, -50%)) scaleX(1); }
     }
   }
 }
 @media (prefers-reduced-motion:reduce){
-  .sec-title .ja::after{ transform:translateX(-50%) scaleX(1); }
+  .sec-title .ja::after{ transform:translateX(var(--rule-shift, -50%)) scaleX(1); }
 }
 .sec-title .en{
   display:block;
@@ -242,7 +243,11 @@ img{ max-width:100%; height:auto; display:block; }
   margin:0;
   line-height:2.4;
   color:var(--text-thin);
-  text-align:center;
+  /* 3行以上の文章は左揃え。中央揃えだと改行位置が毎行ばらついて読みにくい
+     （中央揃えは短い詩的な行＝.lead / .concept-tag / .concept-close だけに残す） */
+  text-align:left;
+  max-width:34em;
+  margin-inline:auto;
   text-wrap:pretty;
   font-size:16.1px;     /* ふつうの本文より0.1pt太め */
   font-weight:400;      /* body の 300 から一段上げる */
@@ -305,14 +310,8 @@ img{ max-width:100%; height:auto; display:block; }
   position:relative;
   transition:transform .4s ease, box-shadow .4s ease;
 }
-.card::before{
-  content:"";
-  position:absolute; inset:0 0 auto 0;
-  height:3px;
-}
-.card-yoga::before { background:var(--yoga); }
-.card-mimi::before { background:var(--mimi); }
-.card-henna::before{ background:var(--henna); }
+/* カード上端の色バーは、よくある型なのでやめた。
+   色は「サービス名の下の区切り線」に移して、意味のある位置だけで使う */
 
 .card:hover{
   transform:translateY(-4px);
@@ -335,6 +334,9 @@ img{ max-width:100%; height:auto; display:block; }
   padding-bottom:18px;
   border-bottom:1px solid var(--line);
 }
+.card-yoga  .card-lead{ border-bottom-color:var(--yoga); }
+.card-mimi  .card-lead{ border-bottom-color:var(--mimi); }
+.card-henna .card-lead{ border-bottom-color:var(--henna); }
 .card-yoga  .card-lead{ color:var(--yoga-dark); }
 .card-mimi  .card-lead{ color:var(--mimi-dark); }
 .card-henna .card-lead{ color:var(--henna-dark); }
@@ -344,6 +346,7 @@ img{ max-width:100%; height:auto; display:block; }
   font-size:.92rem;
   line-height:2.3;
   color:var(--text-thin);
+  text-align:left;
   text-wrap:pretty;
 }
 
@@ -594,4 +597,48 @@ img{ max-width:100%; height:auto; display:block; }
       to  { opacity:1; transform:translateY(0); }
     }
   }
+}
+
+
+/* =========================================
+   読みやすさと、画面のリズム（2026-09-30 追記）
+
+   「どこも同じ余白・どこも中央揃え」だと、どのセクションも同じ重さに見える。
+   情緒を伝える場所（コンセプト・お誘い）はゆったり中央に、
+   情報を読む場所（メニュー・料金・アクセス）は詰めて左に、と役割で分ける。
+========================================= */
+
+/* ② 余白のリズム */
+.concept{ padding-block:clamp(96px, 15vw, 168px); }   /* 読ませる → 広く */
+.price,
+.access{ padding-block:clamp(56px, 8vw, 96px); }      /* 情報 → 詰める */
+
+/* ③ 情報セクションの見出しは左揃え */
+.services .sec-title,
+.price    .sec-title,
+.online   .sec-title,
+.access   .sec-title{
+  text-align:left;
+}
+.services .sec-title .ja,
+.price    .sec-title .ja,
+.online   .sec-title .ja,
+.access   .sec-title .ja{
+  --rule-left:0;
+  --rule-shift:0;
+  --rule-origin:left;
+  --rule-w:56px;
+}
+
+/* 幅の狭い端末（320px）で料金の注釈がはみ出していたのを修正。
+   金額そのものは途中で切れてほしくないので nowrap のまま、
+   うしろの注釈だけ折り返せるようにする */
+.price-list dd{ min-width:0; }
+.price-list dd .note{ white-space:normal; }
+
+/* ⑤ キーボードで操作したときに、いまどこにいるか分かるようにする */
+:focus-visible{
+  outline:2px solid var(--yoga-dark);
+  outline-offset:3px;
+  border-radius:2px;
 }
